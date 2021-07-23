@@ -37,7 +37,7 @@ def func():
 
 
 
-def matching(s):
+def matching(s,mecab):
     a = mecab.pos(s)
     dic_n={
         '크롬':'Chrome',
@@ -81,51 +81,56 @@ def matching(s):
     return res
 
 
-app = Application(backend='uia')
-path = os.path.join(os.path.dirname(os.path.realpath(__file__)), "mecab\mecab-ko-dic")
-win = 'start'; order = 'start'
+def start():
 
-try:
-    mecab = Mecab(dicpath='C:\mecab\mecab-ko-dic')
-except:
-    mecab = Mecab(dicpath=path)
+    app = Application(backend='uia')
+    path = os.path.join(os.path.dirname(os.path.realpath(__file__)), "mecab\mecab-ko-dic")
+    win = 'start'; order = 'start'
 
-while win != ' ' or order != ' ':
+    try:
+        mecab = Mecab(dicpath='C:\mecab\mecab-ko-dic')
+    except:
+        mecab = Mecab(dicpath=path)
 
-    win, order, obj = matching(func())
+    while win != ' ' or order != ' ':
 
-
-    if win == 'computer':
-        if order == 'shut':
-            winautoFunctions.close_all_window()
-            winautoFunctions.shutdown_computer()
-
-    if win != ' ' and win != 'computer':
-        try:
-            app.connect(title_re='.*' + win + '.*', found_index=0)
-            window = app.top_window()
-            window.set_focus()
-            time.sleep(0.1)
-        except:
-            print(win+"이 윈도우에 없습니다.")
+        win, order, obj = matching(func(),mecab)
 
 
-    if order ==  'back':
-        key.send_keys('%{LEFT}')
-        continue
-    if order == 'front':
-        key.send_keys('%{RIGHT}')
-        continue
-    if order ==  'shut':
-        key.send_keys('^w')
-        continue
-    if order ==  'on':
-        key.send_keys('^t')
-        continue
-    if order == 'search':
-        winautoFunctions.search_keyword(obj,window)
-        continue
+        if win == 'computer':
+            if order == 'shut':
+                winautoFunctions.close_all_window()
+                winautoFunctions.shutdown_computer()
 
-    tmp = win
+        if win != ' ' and win != 'computer':
+            try:
+                app.connect(title_re='.*' + win + '.*', found_index=0)
+                window = app.top_window()
+                window.set_focus()
+                time.sleep(0.1)
+            except:
+                print(win+"이 윈도우에 없습니다.")
+
+
+        if order ==  'back':
+            key.send_keys('%{LEFT}')
+            continue
+        if order == 'front':
+            key.send_keys('%{RIGHT}')
+            continue
+        if order ==  'shut':
+            key.send_keys('^w')
+            continue
+        if order ==  'on':
+            key.send_keys('^t')
+            continue
+        if order == 'search':
+            winautoFunctions.search_keyword(obj,window)
+            continue
+
+        tmp = win
+
+if __name__ == '__main__':
+    pass
 
 
